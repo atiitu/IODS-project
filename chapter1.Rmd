@@ -1,10 +1,14 @@
 
-# The course is about open data and open data science.
+# The course about Open data and Open data science.
 
-*open data
-*analyze
-*understand
+-We'll use open data
+-We will analyze data with open source software tools
+-We will understand the basics of important analysis methods
 
-# You can find my GitHub reposity here:
+## My GitHub reposity can be found here
 
 https://github.com/atiitu/IODS-project
+
+##Tools
+
+R, RStudio, GitHub
