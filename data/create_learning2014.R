@@ -23,6 +23,7 @@ str(learning_data)
 #3. STEP in excersize ###
 
 #scale Attitude variable (because it is a sum of 10 questions)
+learning_data$Attitude #nämä jaetaan kymmenella
 learning_data$attitude <- learning_data$Attitude / 10
 
 # Next steps are for combining right questions to form columns deep, stra and surf
@@ -57,15 +58,35 @@ learning_data$deep <- rowMeans(deep_columns)
 learning_data$stra <- rowMeans(stra_columns)
 learning_data$surf <- rowMeans(surf_columns)
 
+#look how these new columns are
+learning_data$deep
+learning_data$stra
+learning_data$surf
 
-learn_variables <- c("gender", "Age", "Attitude", "")
+#Select everyone (rows) that have points zero 
+learning_data <- filter(learning_data, Points > 0)
 
-Create an analysis dataset with the variables gender,
-age, attitude, deep, stra, surf and points by combining 
-questions in the learning2014 data, as defined in the datacamp 
-exercises and also on the bottom part of the following page 
-(only the top part of the page is in Finnish).
-http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS2-meta.txt. 
-Scale all combination variables to the original scales (by taking the mean).
-Exclude observations where the exam points variable is zero.
-(The data should then have 166 observations and 7 variables) (1 point)
+#Name the wanted columns
+colnames(learning_data)
+learn_variables <- c("gender", "Age", "attitude", "deep", "stra", "surf","Points")
+
+#create this smaller analysis dataset
+ldata <- select(learning_data, one_of(learn_variables))
+
+#Check the structure
+str(ldata)
+colnames(ldata)
+
+#change some column names:
+# change the name of the second column
+colnames(ldata)[2] <- "age"
+
+# change the name of "Points" to "points"
+colnames(ldata)[7] <- "points"
+
+#check the colnames again
+colnames(ldata)
+str(ldata)
+dim(ldata)
+
+#Looks cool. Data in ldata ready for analysis!
