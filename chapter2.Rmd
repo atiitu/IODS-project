@@ -1,18 +1,2 @@
 # Regression and model validation
-
-##The very basics of R was described in the first excersizes.
-
-I learned for example
--that R can work as a simple calculator
--a couple of basic options to study data (str, head, mean -fuctions etc)
-
-##The most important topic was different data types in R:
-
--numeric
--logical
--character
--factors (stored as numeric but levels can be non-numeric)
-
-I also learned how to create simple data structures of different types. What I need to remember, is that when creating a character-vector, "" are needed: data <- c("mina", "sina", "han")
-
-Please visit datacamp to learn and study further.
+# Anna Syreeni, Open Data Science course 10.11.2018

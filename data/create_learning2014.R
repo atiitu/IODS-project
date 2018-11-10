@@ -90,3 +90,16 @@ str(ldata)
 dim(ldata)
 
 #Looks cool. Data in ldata ready for analysis!
+
+#Set working directory
+setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
+
+#Save data table for later use
+#help("write.table")
+write.table(ldata, file="learning2014.txt", sep="\t", dec=".")
+
+#Test that data is OK when read again
+test_table <- read.table(file = "learning2014.txt", sep="\t")
+
+str(test_table) #looks good!
+head(test_table)
