@@ -3,27 +3,55 @@ title = "Week2:Regression and model validation"
 
 ---
 
+---
+output="html_document"
+---
+
 #Read in and study data
 
 First, I changed the working directory where the data is.
 The data is in .txt -format and is tab-separated.
 
-```{r} 
+```{r eval=FALSE} 
+setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
+```
+
+
+```{r eval=FALSE} 
 data <- read.table(file = "learning2014.txt", sep="\t")
 ```
 
 The data table was studied:
-```{r} 
+```{r,results=FALSE} 
 str(data)
 head(data)
 dim(data)
 ```
 In this dataset, there are 166 rows and 7 columns:
 gender, age, attitude, deep, stra, surf, points.
-Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (scales 1-5). Points-column is the points got from the exam.
+Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (deep, surface or strategic, scales 1-5). Points-column is the points got from the exam.
 
 Please find more detail about the data in here
 http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt
+
+Summaries of all variables can be found below
+```{r}
+summary(data$gender)
+
+summary(data$age)
+
+summary(data$attitude)
+
+summary(data$deep)
+
+summary(data$stra)
+
+summary(data$surf)
+
+summary(data$points)
+```
+
+Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)
 
 
 ```{r}```
