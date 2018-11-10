@@ -1,2 +1,29 @@
-# Regression and model validation
-# Anna Syreeni, Open Data Science course 10.11.2018
+---
+title = "Week2:Regression and model validation"
+
+---
+
+#Read in and study data
+
+First, I changed the working directory where the data is.
+The data is in .txt -format and is tab-separated.
+
+```{r} 
+data <- read.table(file = "learning2014.txt", sep="\t")
+```
+
+The data table was studied:
+```{r} 
+str(data)
+head(data)
+dim(data)
+```
+In this dataset, there are 166 rows and 7 columns:
+gender, age, attitude, deep, stra, surf, points.
+Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (scales 1-5). Points-column is the points got from the exam.
+
+Please find more detail about the data in here
+http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt
+
+
+```{r}```
