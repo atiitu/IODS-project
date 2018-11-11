@@ -1,57 +1,73 @@
----
-title = "Week2:Regression and model validation"
+#Week2 excersize: Regression models  
 
----
-
----
-output="html_document"
----
-
-#Read in and study data
+Read and study data
 
 First, I changed the working directory where the data is.
 The data is in .txt -format and is tab-separated.
 
-```{r eval=FALSE} 
+```{r} 
 setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
-```
-
-
-```{r eval=FALSE} 
 data <- read.table(file = "learning2014.txt", sep="\t")
 ```
 
-The data table was studied:
+The data table was studied with relevant r-functions.
 ```{r,results=FALSE} 
 str(data)
 head(data)
 dim(data)
 ```
-In this dataset, there are 166 rows and 7 columns:
+The data is about learning attitudes and points got from an exam. In this dataset, there are 166 rows and 7 columns:
 gender, age, attitude, deep, stra, surf, points.
 Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (deep, surface or strategic, scales 1-5). Points-column is the points got from the exam.
 
 Please find more detail about the data in here
 http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt
 
-Summaries of all variables can be found below
+Summaries of all variables was studied with summary function:
+Gender:
 ```{r}
 summary(data$gender)
-
+```
+Age:
+```{r}
 summary(data$age)
-
-summary(data$attitude)
-
+```
+Attitude:
+```{r}}
+summary(data$attitude
+```
+Deep questions:
+```{r}
 summary(data$deep)
-
+```
+Strategic questions:
+```{r}
 summary(data$stra)
-
+```
+Surface questions:
+```{r}
 summary(data$surf)
-
+```
+Exam points:
+```{r}
 summary(data$points)
 ```
 
+```{r}
+#ccess the GGally and ggplot2 libraries
+library(GGally)
+library(ggplot2)
+
+# Variable dispersions and correlations can be studied with ggpairs-function
+
+data_correlations <- gpairs(learning2014, mapping = aes(col= gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+
+data_correlations
+
+gpairs(learning2014, mapping = aes(col= gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+
+
+
+
 Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)
 
-
-```{r}```

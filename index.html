@@ -149,10 +149,7 @@ $(document).ready(function () {
 <li><a href="#my-github-reposity-can-be-found-here">My GitHub reposity can be found here</a></li>
 <li><a href="#tools">Tools</a></li>
 </ul></li>
-<li><a href="#regression-and-model-validation">Regression and model validation</a><ul>
-<li><a href="#the-very-basics-of-r-was-described-in-the-first-excersizes.">The very basics of R was described in the first excersizes.</a></li>
-<li><a href="#the-most-important-topic-was-different-data-types-in-r">The most important topic was different data types in R:</a></li>
-</ul></li>
+<li><a href="#week2-excersize-regression-models">Week2 excersize: Regression models</a></li>
 </ul>
 </div>
 
@@ -170,19 +167,43 @@ $(document).ready(function () {
 <hr />
 </div>
 </div>
-<div id="regression-and-model-validation" class="section level1">
-<h1>Regression and model validation</h1>
-<div id="the-very-basics-of-r-was-described-in-the-first-excersizes." class="section level2">
-<h2>The very basics of R was described in the first excersizes.</h2>
-<p>I learned for example -that R can work as a simple calculator -a couple of basic options to study data (str, head, mean -fuctions etc)</p>
-</div>
-<div id="the-most-important-topic-was-different-data-types-in-r" class="section level2">
-<h2>The most important topic was different data types in R:</h2>
-<p>-numeric -logical -character -factors (stored as numeric but levels can be non-numeric)</p>
-<p>I also learned how to create simple data structures of different types. What I need to remember, is that when creating a character-vector, “” are needed: data &lt;- c(“mina”, “sina”, “han”)</p>
-<p>Please visit datacamp to learn and study further.</p>
+<div id="week2-excersize-regression-models" class="section level1">
+<h1>Week2 excersize: Regression models</h1>
+<p>Read and study data</p>
+<p>First, I changed the working directory where the data is. The data is in .txt -format and is tab-separated.</p>
+<pre class="r"><code>setwd(&quot;~/Tyojuttuja/opinnot/GitHub/IODS-project/data&quot;)
+data &lt;- read.table(file = &quot;learning2014.txt&quot;, sep=&quot;\t&quot;)</code></pre>
+<p>The data table was studied with relevant r-functions.</p>
+<pre class="r"><code>str(data)
+head(data)
+dim(data)</code></pre>
+<p>The data is about learning attitudes and points got from an exam. In this dataset, there are 166 rows and 7 columns: gender, age, attitude, deep, stra, surf, points. Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (deep, surface or strategic, scales 1-5). Points-column is the points got from the exam.</p>
+<p>Please find more detail about the data in here <a href="http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt" class="uri">http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-meta.txt</a></p>
+<p>Summaries of all variables was studied with summary function:</p>
+<pre class="r"><code>summary(data$gender)</code></pre>
+<pre><code>##   F   M 
+## 110  56</code></pre>
+<pre class="r"><code>summary(data$age)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   17.00   21.00   22.00   25.51   27.00   55.00</code></pre>
+<pre class="r"><code>summary(data$attitude)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.400   2.600   3.200   3.143   3.700   5.000</code></pre>
+<pre class="r"><code>summary(data$deep)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.583   3.333   3.667   3.680   4.083   4.917</code></pre>
+<pre class="r"><code>summary(data$stra)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.250   2.625   3.188   3.121   3.625   5.000</code></pre>
+<pre class="r"><code>summary(data$surf)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.583   2.417   2.833   2.787   3.167   4.333</code></pre>
+<pre class="r"><code>summary(data$points)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    7.00   19.00   23.00   22.72   27.75   33.00</code></pre>
+<p>Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)</p>
+<p><code>{r}</code></p>
 <hr />
-</div>
 </div>
 
 
