@@ -76,3 +76,26 @@ model2 <- lm(points ~ attitude, data = data)
 summary(model2)
 ```
 When the learning-variables were removed from the statistical model, the effect of attitude on exam points remained quite unchanged (Beta=3.5, SE 0.6, P = 4.2*10-9) meaning that one unit increase in (mean) attitude (scale 1-5) will in increase your exam success by 3.5. Attitude explaines 18.6% of the variability in the exam points (adjusted R-squared)
+
+Assumptions of the regression model was tested with diagnostic
+plots.
+
+Residuals vs. fitted values picture showed that the residuals do not have non-linear patters and they are nicely and evenly scattered around the horizontal line.
+```{r}
+#Residuals vs Fitted values
+plot(model2, which = c(1))
+```
+
+The normal QQ-plot showed that residuals are quite normally distributed. This is also an assumption in of the linear regression model. The residuals should roughly follow the straight line in the QQ-plot.
+```{r}
+#Normal QQ-plot
+plot(model2, which = c(2))
+```
+
+There were no significant outlier in the data that would greatly affect the results, as shown in the residuals vs.
+leverage diagnostic plot.
+
+```{r}
+#Residuals vs Leverage.
+plot(model2, which = c(5))
+```

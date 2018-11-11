@@ -61,3 +61,38 @@ summary(model)
 
 model2 <- lm(points ~ attitude, data = data)
 summary(model
+        
+#Using a summary of your fitted model, explain the 
+#relationship between the chosen explanatory variables 
+#and the target variable (interpret the model parameters).
+#Explain and interpret the multiple R squared of the model. 
+#(0-3 points)
+
+# WRITTEN!
+
+
+#Produce the following diagnostic plots:
+#Residuals vs Fitted values, Normal QQ-plot
+#and Residuals vs Leverage. Explain the assumptions
+#of the model and interpret the validity of those 
+#assumptions based on the diagnostic plots. (0-3 points)
+
+#We will focus on plots 1, 2 and 5: Residuals vs Fitted values, 
+#Normal QQ-plot and Residuals vs Leverage.
+
+# draw diagnostic plots using the plot() function. Choose the plots 1, 2 and 5
+#Residuals vs Fitted values
+#This plot shows if residuals have non-linear patterns
+plot(model2, which = c(1))
+
+#Normal QQ-plot
+#This plot shows if residuals are normally distributed. 
+#Do residuals follow a straight line well or do they 
+#deviate severely? It's good if residuals are lined well 
+#on the straight dashed line.
+
+plot(model2, which = c(2))
+
+
+#Residuals vs Leverage.
+plot(model2, which = c(5))
