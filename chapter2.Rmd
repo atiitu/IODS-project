@@ -2,20 +2,17 @@
 
 Read and study data
 
-First, I changed the working directory where the data is.
 The data is in .txt -format and is tab-separated.
 
 ```{r} 
-setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
-data <- read.table(file = "learning2014.txt", sep="\t")
+setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project")
+data <- read.table(file = "~/Tyojuttuja/opinnot/GitHub/IODS-project/data/learning2014.txt", sep="\t")
+#I changed the working directory back to project
 ```
 
-The data table was studied with relevant r-functions.
-```{r,results=FALSE} 
-str(data)
-head(data)
-dim(data)
-```
+The data table was studied with relevant r-functions such as 
+str(), head() and dim().
+
 The data is about learning attitudes and points got from an exam. In this dataset, there are 166 rows and 7 columns:
 gender, age, attitude, deep, stra, surf, points.
 Attitude is the learning attitude (1-5) and deep, stra and surf are means of different kind of learning-related questions (deep, surface or strategic, scales 1-5). Points-column is the points got from the exam.
@@ -33,8 +30,8 @@ Age:
 summary(data$age)
 ```
 Attitude:
-```{r}}
-summary(data$attitude
+```{r}
+summary(data$attitude)
 ```
 Deep questions:
 ```{r}
@@ -54,20 +51,28 @@ summary(data$points)
 ```
 
 ```{r}
-#ccess the GGally and ggplot2 libraries
+#Access the GGally and ggplot2 libraries
 library(GGally)
 library(ggplot2)
 
 # Variable dispersions and correlations can be studied with ggpairs-function
 
-data_correlations <- gpairs(learning2014, mapping = aes(col= gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+data_correlations <- ggpairs(data, mapping =  aes(col= gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
 
 data_correlations
+```
 
-gpairs(learning2014, mapping = aes(col= gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+From the data distributions, we can notice that some variables are about normally distributed (deep, stra and surf questions mainly). On the other hand age is right-tailed: most students are in their twenties but then there are a couple of 30-50 year old students. It looks like the exam points correlates mostly with attitude (r=0.43).This correlation is similar in males and females. The attitude does not correlate strongly with age (r<0.1)
 
+```{r}
+model <- lm(points ~ attitude + stra + surf, data = data)
+summary(model)
+```
 
+Exam points correlated stronly with attitude (Beta=3.4 SE 0.6, P = 2*10-8) in a linear regression model with strategic (stra) and surface (surf) questions. This means that one unit increase in (mean) attitude (scale 1-5) will in increase your exam success by 3.4. The question variables did not significantly affect the exam points (P-values > 0.1).
 
-
-Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)
-
+```{r}
+model2 <- lm(points ~ attitude, data = data)
+summary(model2)
+```
+When the learning-variables were removed from the statistical model, the effect of attitude on exam points remained quite unchanged (Beta=3.5, SE 0.6, P = 4.2*10-9) meaning that one unit increase in (mean) attitude (scale 1-5) will in increase your exam success by 3.5. Attitude explaines 18.6% of the variability in the exam points (adjusted R-squared)

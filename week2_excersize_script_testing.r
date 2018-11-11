@@ -29,10 +29,35 @@ commenting on the distributions of the variables
 and the relationships between them. (0-3 points)
 
 #Summary of all data
-# access the GGally and ggplot2 libraries
+
+#Access the GGally and ggplot2 libraries
 library(GGally)
 library(ggplot2)
 
+# Variable dispersions and correlations can be studied with ggpairs-function
 
+data_correlations <- ggpairs(data, 
+                            mapping = aes(col= gender, alpha = 0.3),
+                            lower = list(combo = wrap("facethist", bins = 20)))
 
+data_correlations
 
+##Next 
+#Choose three variables as explanatory
+#variables and fit a regression model 
+#where exam points is the target (dependent) variable. 
+#Show a summary of the fitted model and comment and 
+#interpret the results.
+#Explain and interpret the statistical test 
+#related to the model parameters. 
+#If an explanatory variable in your model does
+#not have a statistically significant relationship 
+#with the target variable, 
+##remove the variable from the model
+#and fit the model again without it. (0-4 points
+
+model <- lm(points ~ attitude + stra + surf, data = data)
+summary(model)
+
+model2 <- lm(points ~ attitude, data = data)
+summary(model
