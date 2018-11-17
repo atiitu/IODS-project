@@ -22,7 +22,8 @@ Data contains 382 observations (students) of a total of 35 variables, which are 
 ```{r echo=FALSE}
 colnames(alc)
 ```
-The variables are:
+***********************************************************************
+The variables are:<br/>
 
 1 school - student's school (binary: "GP" - Gabriel Pereira or "MS" - Mousinho da Silveira)<br/>
 2 sex - student's sex (binary: "F" - female or "M" - male)<br/>
@@ -61,6 +62,42 @@ these grades are related with the course subject, Math or Portuguese:
 33 G3 - final grade (numeric: from 0 to 20, output target)<br/>
 34 alc_use - average alcohol use on weekdays and weekends (variable created from averagin Dalc and Walc)<br/>
 35 high_use - TRUE or FALSE if the use of alchol is >2 (variable created in create_alc.R)<br/>
+******************************************************************<br/>
+
+With this data, I will analyze how going out with friends (goout), mother's education (Medu), father's education (Fedu
++) and final grade (G3) associate with the use of alcohol (low or high). I hypothesize that:<br/>
+-those that go more out with friends think more alcohol<br/>
+-low mother and father education associate with higher alcohol use<br/>
+-those that drink more have lower final grade.
+
+Going out:<br/>
+
+As hypothesized, 60% of those that are going out with frends the most (5 on 1-5 scale) are high users of alcohol (>2 on 1-5 scale). Of those that go out the least (1), only 13,6% are high alcohol users.
+
+```{r}
+library(dplyr); library(ggplot2)
+mytable <- table(high_use = alc$high_use, going_out = alc$goout)
+prop.table(mytable, 2)
+```
+
+mother's and father's education
+```{r}
+mytable <- table(high_use = alc$high_use, mothers_education = alc$Medu)
+prop.table(mytable, 2)
+```
+```{r}
+mytable <- table(high_use = alc$high_use, fathers_education = alc$Fedu)
+prop.table(mytable, 2)
+```
+
+final grades:
+```{r}
+# initialize a plot of high_use and G3
+g1 <- ggplot(alc, aes(x = high_use, y = G3))
+
+# define the plot as a boxplot and draw it
+g1 + geom_boxplot() + ylab("final grade (points)") + xlab("high-user of alcohol")
+```
 
 
 
