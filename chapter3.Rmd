@@ -57,10 +57,10 @@ these grades are related with the course subject, Math or Portuguese:
 ##Explore associations with high use of alcohol
 
 With this data, I will analyze how going out with friends (goout), mother's education (Medu), father's education (Fedu
-+) and final grade (G3) associate with the use of alcohol (low or high). I hypothesize that:<br/>
++) and first grade (G1) associate with the use of alcohol (low or high). I hypothesize that:<br/>
 -those that go more out with friends think more alcohol<br/>
 -low mother and father education associate with higher alcohol use<br/>
--those that drink more have lower final grade.
+-low first grades associate with high alcohol use
 
 Going out:<br/>
 
@@ -91,13 +91,13 @@ mytable
 prop.table(mytable, 2)
 ```
 
-Final grades:
+First grades:
 
-As seen from the box-plot, students who drink more alcohol, seem to have slighty lower final grades (G3-variable). This notion goes in the hypothetised direction.
+As seen from the box-plot, lower grades seem to associate with higher alcohol useage. (G1-variable). This notion goes in the hypothetised direction.
 
 ```{r}
 # initialize a plot of high_use and G3
-g1 <- ggplot(alc, aes(x = high_use, y = G3))
+g1 <- ggplot(alc, aes(x = high_use, y = G1))
 
 # define the plot as a boxplot and draw it
 g1 + geom_boxplot() + ylab("final grade (points)") + xlab("high-user of alcohol")
@@ -143,6 +143,32 @@ str(alc$Fedu)
 ```{r}
 #logistic regression model
 model <- glm(high_use ~ Medu + Fedu, data = alc, family = "binomial")
+
+# print out a summary of the model
+summary(model)
+```
+
+```{r echo=FALSE}
+# print out the coefficients of the model
+coef <-coef(model)
+
+# compute odds ratios (OR)
+OR <- coef %>% exp
+
+# compute confidence intervals (CI)
+CI <- confint(model) %>% exp
+```
+
+```{r}
+#print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```
+
+Last I hypotethized that lower first grades are associated with high alcohol use. This was true (p = 0.004, OR(97.5%CI):0.88(0.81,0.96)) wiht odds ratios telling 
+
+```{r}
+#logistic regression model
+model <- glm(high_use ~ G1, data = alc, family = "binomial")
 
 # print out a summary of the model
 summary(model)
