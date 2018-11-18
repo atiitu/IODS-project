@@ -5,11 +5,6 @@ date: "17 November 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
 In this week's excersize we'll analyze data on student's alcohol
 consumption. It is combined from two questionnaires originally downloaded from: https://archive.ics.uci.edu/ml/datasets/Student+Performance#
 
@@ -64,6 +59,8 @@ these grades are related with the course subject, Math or Portuguese:
 35 high_use - TRUE or FALSE if the use of alchol is >2 (variable created in create_alc.R)<br/>
 ******************************************************************<br/>
 
+##Explore associations with high use of alcohol
+
 With this data, I will analyze how going out with friends (goout), mother's education (Medu), father's education (Fedu
 +) and final grade (G3) associate with the use of alcohol (low or high). I hypothesize that:<br/>
 -those that go more out with friends think more alcohol<br/>
@@ -77,20 +74,32 @@ As hypothesized, 60% of those that are going out with frends the most (5 on 1-5 
 ```{r}
 library(dplyr); library(ggplot2)
 mytable <- table(high_use = alc$high_use, going_out = alc$goout)
+mytable
 prop.table(mytable, 2)
 ```
 
-mother's and father's education
+Mother's and father's education: <br/>
+
+There is no clear relationship between motheral education and alcohol use, except in the class of lowest mothernal eduacation, 66,6% of the students belong to the high-alcohol-usage group. Only 3 students belong to this lowest "mother-education"-group, and therefore this finding should be interpreted with caution. In other mothernal education classes, the proportion of high alcohol users is <=35.3%.
+
 ```{r}
 mytable <- table(high_use = alc$high_use, mothers_education = alc$Medu)
-prop.table(mytable, 2)
-```
-```{r}
-mytable <- table(high_use = alc$high_use, fathers_education = alc$Fedu)
+mytable
 prop.table(mytable, 2)
 ```
 
-final grades:
+Father's education does not seem to associate with student's alcohol use as seen from the table below. There were only two students whose father had the lowest education. It seems that in this dataset, parental education do not affect student's alcohol usage.
+
+```{r}
+mytable <- table(high_use = alc$high_use, fathers_education = alc$Fedu)
+mytable
+prop.table(mytable, 2)
+```
+
+Final grades:
+
+As seen from the box-plot, students who drink more alcohol, seem to have slighty lower final grades (G3-variable). This notion goes in the hypothetised direction.
+
 ```{r}
 # initialize a plot of high_use and G3
 g1 <- ggplot(alc, aes(x = high_use, y = G3))
@@ -99,24 +108,63 @@ g1 <- ggplot(alc, aes(x = high_use, y = G3))
 g1 + geom_boxplot() + ylab("final grade (points)") + xlab("high-user of alcohol")
 ```
 
+##Statistical testing of associations with high use of alcohol
 
+The association with variables and high alcohol is next tested with logistic regression. In the first model, going out with friends (scale 1-5 ) and was tested as a explanatory variable. As hypothetized, going out with friends is associated with high alcohol consumption (p = 5.210^-11) with 
+OR (97.5%CI) of 2.14(1.71,2.70).
 
-## R Markdown
+```{r}
+#logistic regression model
+model <- glm(high_use ~ goout, data = alc, family = "binomial")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# print out a summary of the model
+summary(model)
 ```
 
-## Including Plots
+```{r echo=FALSE}
+# print out the coefficients of the model
+coef <-coef(model)
 
-You can also embed plots, for example:
+# compute odds ratios (OR)
+OR <- coef %>% exp
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# compute confidence intervals (CI)
+CI <- confint(model) %>% exp
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```
+
+Parental education did not associate statistically significantly (P>0.05) with high use of alcohol,and odds ratios were close to one: mothernal education: OR (97.5%CI); 0.98 (0.75, 1.29) and father education: 1.06 (0.81, 1.38). This data therefore does not support my hypothesis that lower parental education would associate with higher alcohol intake of children (student).
+
+```{r}
+# Both variables are shown as integers (1-5) in the data. I think, these variables could have also been presented as factors, because education has true levels. No changes were made however, parental education was stuedied with numeric (integers 1-5 ) values.
+str(alc$Medu)
+str(alc$Fedu)
+```
+
+```{r}
+#logistic regression model
+model <- glm(high_use ~ Medu + Fedu, data = alc, family = "binomial")
+
+# print out a summary of the model
+summary(model)
+```
+
+```{r echo=FALSE}
+# print out the coefficients of the model
+coef <-coef(model)
+
+# compute odds ratios (OR)
+OR <- coef %>% exp
+
+# compute confidence intervals (CI)
+CI <- confint(model) %>% exp
+```
+
+```{r}
+#print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```

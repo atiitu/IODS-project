@@ -365,3 +365,81 @@ cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K =10)
 cv$delta[1]
 #0.2617801
 
+
+###########################################
+# from https://stats.stackexchange.com/questions/60817/significance-of-categorical-predictor-in-logistic-regression
+# Logistic regression with cathegorical variables (or factors)
+mydata <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
+
+mydata$rank <- factor(mydata$rank)
+
+my.mod <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial")
+
+summary(my.mod)
+
+#Coefficients:
+#  Estimate Std. Error z value Pr(>|z|)    
+#(Intercept) -3.989979   1.139951  -3.500 0.000465 ***
+#  gre          0.002264   0.001094   2.070 0.038465 *  
+#  gpa          0.804038   0.331819   2.423 0.015388 *  
+#  rank2       -0.675443   0.316490  -2.134 0.032829 *  
+#  rank3       -1.340204   0.345306  -3.881 0.000104 ***
+#  rank4       -1.551464   0.417832  -3.713 0.000205 ***
+#  ---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#The level rank1 has been omitted and each coefficient of rank denotes 
+#the difference between the coefficient of rank1 and the corresponding 
+#rank level. So the difference between the coefficient of rank1 and rank2
+#would be ???0.675. The coefficient of rank1 is simply the intercept.
+#So the true coefficient of rank2 would be ???3.99???0.675=???4.67.
+#The Wald tests here test whether the difference between the coefficient
+#of the reference class (here rank1) and the corresponding levels differ 
+#from zero. In this case, we have evidence that the coefficients of all 
+#classes differ from the coefficient of rank1. You could also fit the 
+#model without an intercept by adding - 1 to the model formula to see 
+#all coefficients directly:
+
+
+my.mod2 <- glm(admit ~ gre + gpa + rank - 1, data = mydata, family = "binomial")
+
+summary(my.mod2) # no intercept model
+
+#Coefficients:
+#  Estimate Std. Error z value Pr(>|z|)    
+#gre    0.002264   0.001094   2.070 0.038465 *  
+#  gpa    0.804038   0.331819   2.423 0.015388 *  
+#  rank1 -3.989979   1.139951  -3.500 0.000465 ***
+#  rank2 -4.665422   1.109370  -4.205 2.61e-05 ***
+#  rank3 -5.330183   1.149538  -4.637 3.54e-06 ***
+#  rank4 -5.541443   1.138072  -4.869 1.12e-06 ***
+#  ---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#Note that the intercept is gone now and that the coefficient of rank1 
+#is exactly the intercept of the first model. Here, the Wald test checks
+#not the pairwise difference between coefficients but the hypothesis that 
+#each individual coefficient is zero. Again, we have evidence that every 
+#coefficient of rank differs from zero. Finally, to check whether the
+#whole variable rank improves the model fit, we fit one model with 
+#(my.mod1) and one without the variable rank (my.mod2) and conduct a 
+#likelihood ratio test. This tests the hypothesis that all coefficients 
+#of rank are zero:
+
+my.mod1 <- glm(admit ~ gre + gpa + rank, data = mydata, family = "binomial") # with rank
+my.mod2 <- glm(admit ~ gre + gpa, data = mydata, family = "binomial") # without rank
+
+anova(my.mod1, my.mod2, test="LRT")
+
+#Analysis of Deviance Table#
+#
+#Model 1: admit ~ gre + gpa + rank
+#Model 2: admit ~ gre + gpa
+#Resid. Df Resid. Dev Df Deviance  Pr(>Chi)    
+#1       394     458.52                          
+#2       397     480.34 -3  -21.826 7.088e-05 ***
+#  ---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#The likelihood ratio test is highly significant and we would conclude 
+#that the variable rank should remain in the model.
