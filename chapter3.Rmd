@@ -1,9 +1,4 @@
----
-title: "Week3: Logistic regression"
-author: "Anna Syreeni"
-date: "17 November 2018"
-output: html_document
----
+#Week3: Logistic regression"
 
 In this week's excersize we'll analyze data on student's alcohol
 consumption. It is combined from two questionnaires originally downloaded from: https://archive.ics.uci.edu/ml/datasets/Student+Performance#
