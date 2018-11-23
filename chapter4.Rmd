@@ -5,8 +5,30 @@ date: "21 marraskuuta 2018"
 output: html_document
 ---
 
+#Week4: Clustering and classification
+
+**Exploring Boston-data**
+
+For this week's excersize we'll use a Boston-dataset included in the MASS Package in R. Basically, the data is about per capita crime rate by town and some variables describing the towns. There are 14 variables on 506 towns included.
+Ple000000000information about the data form 
+
+
+<https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html>
+
+
+```{r, echo=FALSE, results=FALSE}
+library(MASS)
+data("Boston")
+#14 variables, 506 observations
+# explore the dataset
+str(Boston)
+summary(Boston)
+```
+
+
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ## R Markdown
