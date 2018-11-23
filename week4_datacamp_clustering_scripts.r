@@ -12,6 +12,8 @@ summary(Boston)
 pairs(Boston)
 
 # MASS, corrplot, tidyverse and Boston dataset are available
+library(tidyverse)
+library(corrplot)
 
 # calculate the correlation matrix and round it
 cor_matrix <- cor(Boston) %>% round(2)
@@ -61,7 +63,13 @@ crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE,
 # look at the table of the new factor crime
 table(crime)
 
-# boston_scaled is available
+# remove original crim from the dataset
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+
+# add the new categorical value to scaled data
+boston_scaled <- data.frame(boston_scaled, crime)
+
+
 
 # number of rows in the Boston dataset 
 n <- nrow(boston_scaled)
@@ -80,6 +88,11 @@ test <- boston_scaled[-ind,]
 # save the correct classes from test data
 correct_classes <- test$crime
 
+str(correct_classes)
+
+str(test$crime)
+str(train)
+str(test)
 # remove the crime variable from test data
 test <- dplyr::select(test, -crime)
 
@@ -240,3 +253,19 @@ human_ <- human[1:155, ]
 # add countries as rownames
 rownames(human_) <- human_$Country
 rownames(human_)
+
+# modified human, dplyr and the corrplot functions are available
+
+# remove the Country variable
+human_ <- select(human, -Country)
+
+# Access GGally
+library(GGally)
+
+# visualize the 'human_' variables
+ggpairs(human_)
+
+
+#HIENO korrelaatiokuvaaja tässäkin!
+# compute the correlation matrix and visualize it with corrplot
+cor(human_) %>% corrplot()

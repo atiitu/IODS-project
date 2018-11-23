@@ -10,19 +10,122 @@ output: html_document
 **Exploring Boston-data**
 
 For this week's excersize we'll use a Boston-dataset included in the MASS Package in R. Basically, the data is about per capita crime rate by town and some variables describing the towns. There are 14 variables on 506 towns included.
-Ple000000000information about the data form 
-
-
-<https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html>
-
 
 ```{r, echo=FALSE, results=FALSE}
 library(MASS)
 data("Boston")
-#14 variables, 506 observations
-# explore the dataset
 str(Boston)
 summary(Boston)
+```
+
+ 
+The variables in the Boston data are:<br/>
+crim = per capita crime rate by town<br/>
+zn = proportion of residential land zoned for lots over 25,000 sq.ft<br/> 
+indus = proportion of non-retail business acres per town<br/> 
+chas = Charles River dummy variable (= 1 if tract bounds river; 0 otherwise)<br/>
+nox = nitrogen oxides concentration (parts per 10 million)<br/> 
+rm  = average number of rooms per dwelling<br/>
+age = proportion of owner-occupied units built prior to 1940<br/>
+dis = weighted mean of distances to five Boston employment centres<br/>
+rad = index of accessibility to radial highways<br/>
+tax = full-value property-tax rate per \$10,000<br/>
+ptratio = pupil-teacher ratio by town<br/>
+black = 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town<br/> 
+lstat  = lower status of the population (percent)<br/>
+medv = median value of owner-occupied homes in \$1000s<br/> 
+
+
+The summaries of all variables are listed below. As seen from the summary, for example crime rate differs largely between towns: it ranges from 0.006 crimes from 89.0 crimes per capita.
+
+```{r, echo=FALSE, results=TRUE}
+summary(Boston)
+```
+
+```{r, echo=FALSE, results=FALSE, include=FALSE}
+cor_matrix <- cor(Boston) 
+round(cor_matrix, 2)
+```
+
+As seen from the correlation matrix, for example accessibility to radial highways (rad, calculated correlation r=0.63) and full-value propery-tax rate (tax, calculated r = 0.58) correlate positively with per capita crime rate. Living far Boston five Boston employment centres associates  with lower air nitric oxide concentration (correlation of dis and nos, r = -0.77)
+
+```{r, echo=FALSE, results=FALSE, message=FALSE}
+library(tidyverse)
+library(corrplot)
+corrplot(cor_matrix)
+```
+
+Standardize the dataset and print out summaries of the scaled data. How did the variables change? Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate). Use the quantiles as the break points in the categorical variable. Drop the old crime rate variable from the dataset. Divide the dataset to train and test sets, so that 80% of the data belongs to the train set. (0-2 points)
+
+Next I standarsized all variables in the Boston data. Summaries of the variables are printed below. You can easily see that all standarized variables now have a mean of 0.
+
+```{r, echo=FALSE, message=FALSE}
+# center and standardize variables
+boston_scaled <- scale(Boston)
+
+# summaries of the scaled variables
+summary(boston_scaled)
+```
+
+For further analysis, a cathegorical variable from the scaled crime rate was created (quartiles). This variable now divides the crime rate to "low", "medium low", "medium high" and  "high" -cathegories.
+
+```{r, echo=FALSE, message=FALSE}
+# center and standardize variables
+boston_scaled <- scale(Boston)
+
+# summaries of the scaled variables
+summary(boston_scaled)
+
+# class of the boston_scaled object
+#class(boston_scaled)
+
+# change the object to data frame
+boston_scaled <- as.data.frame(boston_scaled)
+
+# summary of the scaled crime rate
+# summary(boston_scaled$crim)
+
+# create a quantile vector of crim and print it
+bins <- quantile(boston_scaled$crim)
+#bins
+
+# create a categorical variable 'crime'
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, 
+             label = c("low", "med_low", "med_high", "high"))
+
+# look at the table of the new factor crime
+# table(crime)
+
+# remove original crim from the dataset
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+
+# add the new categorical value to scaled data
+boston_scaled <- data.frame(boston_scaled, crime)
+```
+
+Next the Boston data was divided into training and test sets. Randomly chosen 80% belongs to the training set, and the rest is in test-set.
+
+```{r, echo=FALSE, message=FALSE, results=FALSE}
+# number of rows in the Boston dataset 
+n <- nrow(boston_scaled)
+n
+# choose randomly 80% of the rows
+ind <- sample(n,  size = n * 0.8)
+#ind #random row numbers saved
+
+# create train set
+train <- boston_scaled[ind,]
+#class(train) # now a smaller train data.frame was generated with random rows
+
+# create test set 
+test <- boston_scaled[-ind,]
+
+# save the correct classes from test data
+correct_classes <- test$crime
+
+# remove the crime variable from test data
+library(dplyr)
+test <- dplyr::select(test, -crime)
 ```
 
 
