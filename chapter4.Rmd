@@ -131,12 +131,11 @@ test <- dplyr::select(test, -crime)
 Linear discrimant analysis of the Boston data shows that variable rad meaning accessibility to radial highways, is a very strong predictor for a town to belong to a group of high crime rate.
 
 
-```{r, echo=FALSE, message=TRUE}
+```{r, echo=FALSE, message=FALSE}
 lda.fit <- lda(crime ~ ., data = train)
 
 # print the lda.fit object
-lda.fit
-
+#lda.fit
 
 # the function for lda biplot arrows
 # arrow and text color set to black
@@ -166,6 +165,30 @@ lda.arrows(lda.fit, myscale = 2)
 # cross tabulate the results
 #table(correct = correct_classes, predicted = lda.pred$class)
 ```
+
+The lda-model predicts very well the belonging to the high crime rate -cathegory.As seen from the propability table below, 96.6% of the observations in high- crime rate cathegory were correcly classified to the high crime rate group. 
+
+For the other cathegories, LDA performs less well for other groups: For example, only 55.2% towns in the true lowest crime-rate group were correctly classified. The rest (44.8%) were classified to the next group (medium low) group, which shows that LDA had troubles classifing the low and medium low groups.
+
+
+**NOTE ** The numbers might change between different knittings, because the code is run again and the random sample selected for creating the training set differs slightly. Anyway, the interpretaions remain the same that high crime rate group is nicely predicted.
+
+```{r, echo=FALSE, message=FALSE, results=TRUE}
+# correct_classes already saved from the test-set and then removed
+#?predict.lda
+
+# predict classes with test data
+lda.pred <- predict(lda.fit, newdata = test)
+
+# cross tabulate the results
+mytable <- table(correct = correct_classes, predicted = lda.pred$class)
+mytable
+
+prop.table(mytable, 1) %>% round(5)
+```
+
+
+
 
 
 
