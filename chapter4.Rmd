@@ -55,8 +55,6 @@ library(corrplot)
 corrplot(cor_matrix)
 ```
 
-Standardize the dataset and print out summaries of the scaled data. How did the variables change? Create a categorical variable of the crime rate in the Boston dataset (from the scaled crime rate). Use the quantiles as the break points in the categorical variable. Drop the old crime rate variable from the dataset. Divide the dataset to train and test sets, so that 80% of the data belongs to the train set. (0-2 points)
-
 Next I standarsized all variables in the Boston data. Summaries of the variables are printed below. You can easily see that all standarized variables now have a mean of 0.
 
 ```{r, echo=FALSE, message=FALSE}
@@ -108,7 +106,7 @@ Next the Boston data was divided into training and test sets. Randomly chosen 80
 ```{r, echo=FALSE, message=FALSE, results=FALSE}
 # number of rows in the Boston dataset 
 n <- nrow(boston_scaled)
-n
+#n
 # choose randomly 80% of the rows
 ind <- sample(n,  size = n * 0.8)
 #ind #random row numbers saved
@@ -126,6 +124,47 @@ correct_classes <- test$crime
 # remove the crime variable from test data
 library(dplyr)
 test <- dplyr::select(test, -crime)
+```
+
+**Linear discrimant analysis**
+
+Linear discrimant analysis of the Boston data shows that variable rad meaning accessibility to radial highways, is a very strong predictor for a town to belong to a group of high crime rate.
+
+
+```{r, echo=FALSE, message=TRUE}
+lda.fit <- lda(crime ~ ., data = train)
+
+# print the lda.fit object
+lda.fit
+
+
+# the function for lda biplot arrows
+# arrow and text color set to black
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col="black", length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col="black", pos=3)
+}
+
+# target classes as numeric
+classes <- as.numeric(train$crime)
+
+# plot the lda results
+# all was black before adding the col and pch
+plot(lda.fit, dimen = 2, col = classes, pch = classes)
+lda.arrows(lda.fit, myscale = 2)
+
+# lda.fit, correct_classes and test are available
+#?predict.lda
+
+# predict classes with test data
+#lda.pred <- predict(lda.fit, newdata = test)
+
+# cross tabulate the results
+#table(correct = correct_classes, predicted = lda.pred$class)
 ```
 
 

@@ -101,6 +101,11 @@ test <- dplyr::select(test, -crime)
 # linear discriminant analysis
 # now the model uses crime as a target variable
 # and all other variables as predictors (put .)
+# MASS and train are available
+
+# linear discriminant analysis
+# now the model uses crime as a target variable
+# and all other variables as predictors (put .)
 lda.fit <- lda(crime ~ ., data = train)
 
 # print the lda.fit object
@@ -123,16 +128,6 @@ classes <- as.numeric(train$crime)
 # plot the lda results
 # all was black before adding the col and pch
 plot(lda.fit, dimen = 2, col = classes, pch = classes)
-
-# lda.fit, correct_classes and test are available
-?predict.lda
-
-# predict classes with test data
-lda.pred <- predict(lda.fit, newdata = test)
-
-# cross tabulate the results
-table(correct = correct_classes, predicted = lda.pred$class)
-
 lda.arrows(lda.fit, myscale = 2)
 
 #######################################
