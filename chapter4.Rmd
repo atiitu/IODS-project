@@ -103,7 +103,7 @@ boston_scaled <- data.frame(boston_scaled, crime)
 
 Next the Boston data was divided into training and test sets. Randomly chosen 80% belongs to the training set, and the rest is in test-set.
 
-```{r, echo=FALSE, message=FALSE, results=FALSE}
+```{r, echo=FALSE, message=FALSE, results=FALSE, cache=TRUE}
 # number of rows in the Boston dataset 
 n <- nrow(boston_scaled)
 #n
@@ -166,14 +166,12 @@ lda.arrows(lda.fit, myscale = 2)
 #table(correct = correct_classes, predicted = lda.pred$class)
 ```
 
-The lda-model predicts very well the belonging to the high crime rate -cathegory.As seen from the propability table below, 96.6% of the observations in high- crime rate cathegory were correcly classified to the high crime rate group. 
+The lda-model predicts very well the belonging to the high crime rate -cathegory.As seen from the propability table below, 100% of the observations in high- crime rate cathegory were correcly classified to the high crime rate group. 
 
-For the other cathegories, LDA performs less well for other groups: For example, only 55.2% towns in the true lowest crime-rate group were correctly classified. The rest (44.8%) were classified to the next group (medium low) group, which shows that LDA had troubles classifing the low and medium low groups.
+For the other cathegories, LDA performs less well for other groups: For example, only 50% of towns in the true lowest crime-rate group were correctly classified. LDA had even more troubles in correcly classifing the medium high and medium low groups.
 
 
-**NOTE ** The numbers might change between different knittings, because the code is run again and the random sample selected for creating the training set differs slightly. Anyway, the interpretaions remain the same that high crime rate group is nicely predicted.
-
-```{r, echo=FALSE, message=FALSE, results=TRUE}
+```{r, echo=FALSE, message=FALSE, results=TRUE, cache=TRUE}
 # correct_classes already saved from the test-set and then removed
 #?predict.lda
 
@@ -186,11 +184,75 @@ mytable
 
 prop.table(mytable, 1) %>% round(5)
 ```
+**Distances in the Boston data and clustering**
 
 
+```{r}
+data("Boston")
+#str(Boston)
+# center and standardize variables
+boston_scaled <- scale(Boston)
+
+# summaries of the scaled variables
+#summary(boston_scaled)
+```
+
+Next, two distance measures were calculated for the Boston data:
+Euclidean distance matrix and Manhattan distance matrix. The summaries of the distances can be found below.
 
 
+```{r, include=FALSE}
+# euclidean distance matrix, manhattan distance matrix
+dist_eu <- dist(boston_scaled)
+dist_man <- dist(boston_scaled, method = "manhattan")
+```
 
+*Euclidean distance matrix:*
+```{r, include=FALSE}
+#summary of the distances
+summary(dist_eu)
+```
+
+*Manhattan distance matrix:*
+```{r, include=FALSE}
+#summary of the distances
+summary(dist_man)
+```
+
+*K-means clustering*
+
+For the k-means cluster, an optimal number of clusters can be decided from the figure below showing number of clusters (1-10) on the x-axis and within class sum of squares (**WCSS**) on the y-axis. As seen from the figure, 2 clusters seem to be the most optimal for clustring. 
+
+```{r}
+# k-means clustering
+# MASS, ggplot2 and Boston dataset are available
+# K-means might produce different results every time, because it randomly # assigns the initial cluster centers. The function set.seed() can be used # to deal with that.
+set.seed(123)
+
+# determine the number of clusters
+k_max <- 10
+
+# calculate the total within sum of squares
+twcss <- sapply(1:k_max, function(k){kmeans(Boston, k)$tot.withinss})
+
+# visualize the WCSS results
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+```
+
+
+Then k-means clustering was performed with 2 clusters (centers). From the figure we can see how well different variables are separated in different clusters (red or black). For example variables rm (average number of rooms per dwelling) and nox (nitric oxide concentration) form different groups for the two clusters. Especially variable crim (**crime rate in town**) totally separates the two groups. 
+
+
+```{r}
+# k-means clustering
+km <-kmeans(boston_scaled, centers = 2)
+
+# plot the Boston dataset with clusters
+dim(boston_scaled)
+par(mfrow = c(2,1))
+pairs(boston_scaled[,1:7], col = km$cluster)
+pairs(boston_scaled[,8:14], col = km$cluster)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
