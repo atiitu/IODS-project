@@ -1,0 +1,13 @@
+base
+ggplot2
+GGally
+dplyr
+MASS
+tidyverse
+tibble
+tidyr
+readr
+purrr
+stringr
+forcats
+corrplot

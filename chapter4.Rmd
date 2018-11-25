@@ -7,7 +7,7 @@ output: html_document
 
 #Week4: Clustering and classification
 
-**Exploring Boston-data**
+##Exploring Boston-data##
 
 For this week's excersize we'll use a Boston-dataset included in the MASS Package in R. Basically, the data is about per capita crime rate by town and some variables describing the towns. There are 14 variables on 506 towns included.
 
@@ -126,7 +126,7 @@ library(dplyr)
 test <- dplyr::select(test, -crime)
 ```
 
-**Linear discrimant analysis**
+##Linear discrimant analysis##
 
 Linear discrimant analysis of the Boston data shows that variable rad meaning accessibility to radial highways, is a very strong predictor for a town to belong to a group of high crime rate.
 
@@ -184,7 +184,8 @@ mytable
 
 prop.table(mytable, 1) %>% round(5)
 ```
-**Distances in the Boston data and clustering**
+
+##Distances in the Boston data and clustering##
 
 
 ```{r}
@@ -207,19 +208,19 @@ dist_eu <- dist(boston_scaled)
 dist_man <- dist(boston_scaled, method = "manhattan")
 ```
 
-*Euclidean distance matrix:*
-```{r, include=FALSE}
+**Euclidean distance matrix:**
+```{r}
 #summary of the distances
 summary(dist_eu)
 ```
 
-*Manhattan distance matrix:*
-```{r, include=FALSE}
+**Manhattan distance matrix:**
+```{r}
 #summary of the distances
 summary(dist_man)
 ```
 
-*K-means clustering*
+**K-means clustering**
 
 For the k-means cluster, an optimal number of clusters can be decided from the figure below showing number of clusters (1-10) on the x-axis and within class sum of squares (**WCSS**) on the y-axis. As seen from the figure, 2 clusters seem to be the most optimal for clustring. 
 
@@ -253,27 +254,3 @@ par(mfrow = c(2,1))
 pairs(boston_scaled[,1:7], col = km$cluster)
 pairs(boston_scaled[,8:14], col = km$cluster)
 ```
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
