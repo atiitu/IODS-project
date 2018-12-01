@@ -1,14 +1,3 @@
----
-title: "Untitled"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-
 #WEEK 5: Dimensionality reduction techniques:
 
 ## Presenting human data
@@ -112,7 +101,8 @@ biplot(pca_human_std, cex = c(0.7, 0.9), col = c("grey60", "blue"), xlab = pc_la
 It's all about tea in this dataset of 300 observations of 36 variables related to tea consumption: when, how, with who and where you enjoy your tea. This data is included in the package FactoMineR. 
 
 ```{r, echo = FALSE}
-# the tea dataset and packages FactoMineR, ggplot2, dplyr and tidyr are available
+# the tea dataset and packages FactoMineR, ggplot2, dplyr and tidyr are # 
+#available
 
 library(tidyr)
 library(dplyr)
@@ -120,7 +110,6 @@ library(ggplot2)
 library(FactoMineR)
 library(GGally)
 
-# column names to keep 
 data(tea)
 str(tea)
 
@@ -133,10 +122,11 @@ Trying to visualize all these 36 variables is not very informative. Therefore I 
 
 
 ```{r, echo = FALSE}
+library(dplyr)
 keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
 
 # select the 'keep_columns' to create a new dataset
-tea_time <- select(tea, one_of(keep_columns))
+tea_time <- dplyr::select(tea, one_of(keep_columns))
 
 # look at the summaries and structure of the data
 summary(tea_time)
@@ -156,7 +146,7 @@ Load the tea dataset from the package Factominer. Explore the data briefly: look
 
 A multiple correspondance Analysis was performed with the six variables presented above. From the **MCA summary table**, we can see that all variance in the data can be presented in eleven dimensions and 29.5% of the variance are presented with the 1st and second dimensions (figure below) Of the variables, "how" (teaback/unpacked or both) and "where" (tea from chain store/tea shop) correlate most strongly with the two first dimensions in the MCA.
 
-From the **MCA factor map** one can interpret that usually unpacked see is bought from the tea shop and teabacks from the chain store. Also, one can say that green tea is more often drank without milk and lemon or anything (group other). 
+From the **MCA factor map** one can interpret that usually unpacked see is bought from the tea shop and teabacks from the chain store. Also, one can say that green tea is more often drank without milk and lemon or anything (group other). We can also see that most people by their tea from chain stores and they are the users of black and Earl grey tea. 
 
 ```{r}
 # multiple correspondence analysis
@@ -178,28 +168,3 @@ plot(mca, invisible=c("ind"),
 
 
 ```
-
-
-
-
-
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
