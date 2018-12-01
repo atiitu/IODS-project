@@ -1,0 +1,205 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+#WEEK 5: Dimensionality reduction techniques:
+
+## Presenting human data
+
+The human data analyzed here is from 155 all around the world. The variables in the dataset are <br>
+
+Edu2.FM = Proportion of females with at least secondary education divided by proportion of males with at least secondary education<br>
+Labo.FM = Proportion of females in the labour force divided by proportion of males in the labour force<br>
+Edu.Exp = Expected years of schooling<br>
+Life.Exp = Life expectancy at birth<br>
+GNI =  Gross National Income per capita<br>
+Mat.Mor = Maternal mortality ratio<br>
+Ado.Birth = Adolescent birth rate<br>
+Parli.F = Percetange of female representatives in parliament<br>
+
+and they are summarised below. For example, life expectancy ranges from 49 year to 83.5 years (median 74 years). Huge range can be seen also for example for Gross National income (GNI) which ranges from 581 to 123,124 per capita. Huge range can be seen for education years also (5.4-20.2 years). Not many variables are normally scaled, but they are right or left-tailed. A strong positive correlation can bee seen between GNI and life expectancy (r=0.627)
+
+
+```{r, echo = FALSE}
+setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
+human <- read.table(file = "human.txt", sep="\t", header = TRUE)
+summary(human)
+```
+
+
+```{r, echo = FALSE}
+# Access GGally
+#install.packages("GGally")
+library(GGally)
+# visualize the 'human variables
+ggpairs(human)
+```
+
+## Pricipal component analysis
+
+First, a pricipal component analysis was performed with unstandardized human data. There PC1 expalined 99.99% of the variation of the data and only 0.01% remained for the PC2. As shown from the biblot, GNI was the variable mainly determining the PC1. And without standardization all the effects from the other variables can not be interpreted.
+
+
+Standardize the variables in the human data and repeat the above analysis. Interpret the results of both analysis (with and without standardizing). Are the results different? Why or why not? Include captions (brief descriptions) in your plots where you describe the results by using not just your variable names, but the actual phenomenons they relate to. (0-4 points)
+
+```{r, echo = FALSE}
+pca_human <- prcomp(human)
+
+#summary(pca_human)
+# pca_human, dplyr are available
+
+# create and print out a summary of pca_human
+s <- summary(pca_human)
+#s
+
+# rounded percentages of variance captured by each PC
+pca_pr <- round(100*s$importance[2,], digits = 4) 
+
+# print out the percentages of variance
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.5, 0.9), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2], expand = 0.9)
+
+```
+
+
+With standardized human data, the pricipal component analysis gives a more informative results not fully dominated by GNI. Now, PC1 explaines 53.6% of the variability, PC1 16.2% and the rest remains for the other PCs. Now we can see, that gross national income per capita (GNI), education years (Edu.exp) and life expentacy (Life.exp) are all very closely correlated. 
+
+On the otherhand, mothernal mortality and adolescent birth rate are also highly correlated and negatively correlated with GNI, education years and life-expectancy. The variables determining the PC2 are percetange of female representatives in parliament (Parli.F) and the proportion of females in the labour force divided by proportion of males in the labour force (Labo.FM). These two variables are also highly correlated and both are highest in Rwanda and lowest in Iran.
+
+
+
+```{r, echo = FALSE}
+# standardize the variables
+human_std <- scale(human)
+
+# PCA with standardized variables
+#summary(human_std)
+pca_human_std <- prcomp(human_std)
+
+
+# create and print out a summary of pca_human
+s_std <- summary(pca_human_std)
+s_std
+
+# rounded percentages of variance captured by each PC
+pca_pr_std <- round(100*s_std$importance[2,], digits = 1) 
+
+# print out the percentages of variance
+pca_pr_std
+
+# create object pc_lab to be used as axis labels
+pc_lab_std <- paste0(names(pca_pr_std), " (", pca_pr_std, "%)")
+
+# draw a biplot
+biplot(pca_human_std, cex = c(0.7, 0.9), col = c("grey60", "blue"), xlab = pc_lab_std[1], ylab = pc_lab_std[2], expand = 0.8)
+
+```
+
+## Tea data presented
+
+It's all about tea in this dataset of 300 observations of 36 variables related to tea consumption: when, how, with who and where you enjoy your tea. This data is included in the package FactoMineR. 
+
+```{r, echo = FALSE}
+# the tea dataset and packages FactoMineR, ggplot2, dplyr and tidyr are available
+
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(FactoMineR)
+library(GGally)
+
+# column names to keep 
+data(tea)
+str(tea)
+
+#examine keep-dataset
+str(tea)
+dim(tea)
+```
+
+Trying to visualize all these 36 variables is not very informative. Therefore I chose the following six variables for further analysis: "Tea", "How", "how", "sugar", "where", "lunch". These variables are summarised below:
+
+
+```{r, echo = FALSE}
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- select(tea, one_of(keep_columns))
+
+# look at the summaries and structure of the data
+summary(tea_time)
+#str(tea_time)
+#'data.frame':	300 obs. of  6 variables:
+
+# visualize the dataset
+gather(tea_time) %>% ggplot(aes(value)) + 
+  facet_wrap("key", scales = "free") + geom_bar() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+```
+
+
+Load the tea dataset from the package Factominer. Explore the data briefly: look at the structure and the dimensions of the data and visualize it. Then do Multiple Correspondence Analysis on the tea data (or to a certain columns of the data, it's up to you). Interpret the results of the MCA and draw at least the variable biplot of the analysis. You can also explore other plotting options for MCA. Comment on the output of the plots. (0-4 points)
+
+## MCA with Tea data
+
+A multiple correspondance Analysis was performed with the six variables presented above. From the **MCA summary table**, we can see that all variance in the data can be presented in eleven dimensions and 29.5% of the variance are presented with the 1st and second dimensions (figure below) Of the variables, "how" (teaback/unpacked or both) and "where" (tea from chain store/tea shop) correlate most strongly with the two first dimensions in the MCA.
+
+From the **MCA factor map** one can interpret that usually unpacked see is bought from the tea shop and teabacks from the chain store. Also, one can say that green tea is more often drank without milk and lemon or anything (group other). 
+
+```{r}
+# multiple correspondence analysis
+# if graph = TRUE, a graph is drawn to pdf-file
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+# the summary is explained in the video...
+summary(mca)
+
+# visualize MCA
+# you can either plot the variables or the individuals or both
+par = nrow(c(1,2))
+plot(mca, invisible=c("var"), 
+    title ="MCA factor map: tea data, individuals")
+plot(mca, invisible=c("ind"), 
+     habillage = "quali", title ="MCA factor map: tea data, variables")
+
+
+
+```
+
+
+
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
