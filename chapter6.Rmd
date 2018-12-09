@@ -1,30 +1,130 @@
----
-title: "Untitled"
-author: "Anna Syreeni"
-date: "8 joulukuuta 2018"
-output: html_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#Week 6: Analysis of longitudinal data
+
+##BPRS data 
+
+**Data presented** <br>
+
+The BPRS data is a analysed similarly as in the chapter 9 in the book **MABS (Vehkalahti and Everitt, 2019) **
+
+The BPRS dataset consist of weekly BPRS (brief psychiatric rating scale) measurements of 40 men divided into two treatment groups. There are nine measurements per person of which the first is the baseline measurement and eight are measurements during the follow-up. We can see that weekly BPRS score mainly ranges between 18-95.
+
+
+```{r, echo=FALSE}
+#read table in (long format)
+setwd("~/Tyojuttuja/opinnot/GitHub/IODS-project/data")
+B_L <- read.table("~/Tyojuttuja/opinnot/GitHub/IODS-project/data/bprs_long.txt", header = T, sep = "\t")
+
+#Study the long format
+names(B_L)
+str(B_L)
+summary(B_L)
+summary(B_L$week)
+
+#factor two variables
+B_L$treatment <- factor(B_L$treatment)
+B_L$subject <- factor(B_L$subject)
 ```
 
-## R Markdown
+First we ignore the longitudinal format of the data, and want to plot all measurements (BPRS at weeks0-9). From the **figure below** you can see the ranges of bprs in each week. Of course, from this figure wee you cannot see the changes in individual BPRSs nor the effect of treatment. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+library(ggplot2)
+ggplot(B_L, aes(x = week, y = bprs, group = subject)) +
+geom_point()
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+**Linear regression with the BPRS data** 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+First we again ignore the longitudinal format of the data (and several measurements from individuals) and we fit a linear regression model for the BRPS data which tries to resolve how the treatment affect the BPRS.
+
+```{r}
+B_lm <- lm(bprs ~ week + treatment, data = B_L)
+
+# print out a summary of the model
+summary(B_lm)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+From the linear regression **model summary** we can see that weeks affects the bprs but the treatment does not. You shoud not this model however. Next, we will do a proper analysis.
+
+**liner mixed model analysis**
+
+A proper analysis model for this longitudinal data is linear mixed model with random slope and random intercept. We however, first perform a random intercept model only
+
+```{r, echo=FALSE}
+# a random intercept model
+library(lme4)
+B_rand_i <- lmer(bprs ~ week + treatment + (1 | subject), data = B_L, REML = FALSE)
+summary(B_rand_i)
+
+# create a random intercept and random slope model
+B_rand_i_s <- lmer(bprs ~ week + treatment + (week | subject), data = B_L, REML = FALSE)
+summary(B_rand_i_s)
+
+```
+
+When we compare the two LMM model created, we can see that the random intercept random slope model is better.
+
+```{r, echo}
+anova(B_rand_i,B_rand_i_s)
+```
+
+We'll also test if the interaction between time (weeks) and bprs is different in the 
+treatment groups by fitting a LMM with week*treatment. From the anova-comparison we can see that there is now significant effect of the treatment to bprs slope.
+
+
+```{r, echo=FALSE}
+#put interaction in the LMM
+B_rand_interact <- lmer(bprs ~ week + treatment + (week | subject) + week*treatment, data = B_L, REML = FALSE)
+
+summary(B_rand_interact)
+
+#compare with the model without intercation
+anova(B_rand_interact, B_rand_i_s)
+```
+
+**Plot observed and fitted values**
+
+Next we just want to plot the observed and fitted bprs values. For the fitted model values, we'll use the random intercept random slope model without interction-term. 
+** I can not get this work with BPRS data** propably because **subject** is not a unique number that it should be when analysing human data. If I see two same subject numbers I assume that they are the same person! I don't understand how they are different people with differing treatment in this dataset..
+
+
+```{r}
+#ggplot(B_L, aes(x = week, y = bprs, group =subject)) +
+#  geom_line(aes(alpha = treatment))
+#  scale_x_continuous(name = "Time (weeks)", breaks = seq(0,8,2)) +
+#  scale_y_continuous(name = "Observed bprs (points) ") +
+#  theme(legend.position = "top")
+# this not working
+```
+
+## RATS data
+
+Unfortunately I have ony time for a quick LMM with the RATS-data (3 groups, weight measurements).
+So here you go, results from LMM checking if group affect the weight change. And yes, this can be seen, and group affect significanly the rate of weight change (model with interaction better).
+
+
+```{r ,echo = FALSE}
+RATS <- read.table("~/Tyojuttuja/opinnot/GitHub/IODS-project/data/rats_long.txt", header=T, sep = "\t")
+str(RATS)
+
+#factor variables
+RATS$ID <- factor(RATS$ID)
+RATS$Group <- factor(RATS$Group)
+
+# create a random intercept and random slope model
+RATS_ref1 <- lmer(Weight ~ Time + Group + (Time | ID), data = RATSL, REML = FALSE)
+
+summary(RATS_ref1)
+
+# create a random intercept and random slope model with the interaction
+RATS_ref2 <- lmer(Weight ~ Group + Time + (Time|ID) +Time*Group, REML= FALSE, data= RATSL)
+
+summary(RATS_ref2)
+
+# perform an ANOVA test on the two models
+anova(RATS_ref2, RATS_ref1)
+```
+
+
