@@ -105,26 +105,42 @@ Unfortunately I have ony time for a quick LMM with the RATS-data (3 groups, weig
 So here you go, results from LMM checking if group affect the weight change. And yes, this can be seen, and group affect significanly the rate of weight change (model with interaction better).
 
 
-```{r ,echo = FALSE}
-RATS <- read.table("~/Tyojuttuja/opinnot/GitHub/IODS-project/data/rats_long.txt", header=T, sep = "\t")
-str(RATS)
+
+```{r}
+#THIS CODE WORKING IN RSTUDIO but when knitting.. "data" not found, and some variables missing etc blaa  #blaa. I put # because othewise it destroys knitting this whole document...
+#RATS <- read.table("~/Tyojuttuja/opinnot/GitHub/IODS-project/data/rats_long.txt", header=T, sep = "\t")
+#str(RATS)
 
 #factor variables
-RATS$ID <- factor(RATS$ID)
-RATS$Group <- factor(RATS$Group)
+#RATS$ID <- factor(RATS$ID)
+#RATS$Group <- factor(RATS$Group)
 
 # create a random intercept and random slope model
-RATS_ref1 <- lmer(Weight ~ Time + Group + (Time | ID), data = RATSL, REML = FALSE)
-
-summary(RATS_ref1)
+#RATS_ref1 <- lmer(Weight ~ Time + Group + (Time | ID), data = RATS, REML = FALSE)
+#
+#summary(RATS_ref1)
 
 # create a random intercept and random slope model with the interaction
-RATS_ref2 <- lmer(Weight ~ Group + Time + (Time|ID) +Time*Group, REML= FALSE, data= RATSL)
+#RATS_ref2 <- lmer(Weight ~ Group + Time + (Time|ID) +Time*Group, REML= FALSE, data= RATS)
 
-summary(RATS_ref2)
+#summary(RATS_ref2)
 
 # perform an ANOVA test on the two models
-anova(RATS_ref2, RATS_ref1)
+#anova(RATS_ref2, RATS_ref1)
+
+#Data: RATS
+#Models:
+#RATS_ref1: Weight ~ Time + Group + (Time | ID)
+#RATS_ref2: Weight ~ Group + Time + (Time | ID) + Time * Group
+#          Df    AIC    BIC  logLik deviance  Chisq Chi Df Pr(>Chisq)   
+#RATS_ref1  8 1194.2 1219.6 -589.11   1178.2                            
+#RATS_ref2 10 1185.9 1217.6 -582.93   1165.9 12.361      2    0.00207 **
+#---
+#Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+
+
 ```
 
 
